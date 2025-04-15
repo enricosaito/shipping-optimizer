@@ -1,29 +1,15 @@
 // App.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import ProductManager from "./components/ProductManager";
-import BoxSettings from "./components/BoxSettings";
-import PackingResults from "./components/PackingResults";
 import "./App.css";
-
-// Import visualization components
-import CylindricalItem from "./components/Cylindricalitem";
-import ShippingBox from "./components/ShippingBox";
 
 // Types
 interface Dimension {
   width: number;
   length: number;
   height: number;
-}
-
-interface Product {
-  name: string;
-  dimensions: Dimension;
-  color: string;
-  quantity: number;
 }
 
 interface PackedItem {
@@ -51,171 +37,240 @@ interface PackingResult {
   total_items_unpacked: number;
 }
 
-// Default products
-const DEFAULT_PRODUCTS: Product[] = [
-  { name: "Whey Protein", dimensions: { width: 16, length: 16, height: 26 }, color: "#ff5733", quantity: 1 },
-  { name: "Pre-Workout", dimensions: { width: 12, length: 12, height: 12 }, color: "#33ff57", quantity: 1 },
-  { name: "Creatine", dimensions: { width: 12, length: 12, height: 12 }, color: "#3357ff", quantity: 1 },
-  { name: "Multivitamin", dimensions: { width: 7, length: 7, height: 14 }, color: "#f3ff33", quantity: 1 },
-  { name: "Thermogenic", dimensions: { width: 7, length: 7, height: 12 }, color: "#ff33f3", quantity: 1 },
-  { name: "Whey Trial", dimensions: { width: 2, length: 11, height: 16 }, color: "#33fff3", quantity: 1 },
-];
-
-// 3D Visualization Component
-const Visualization: React.FC<{
-  packingResult: PackingResult | null;
-}> = ({ packingResult }) => {
-  const [selectedItem, setSelectedItem] = useState<string | null>(null);
-
-  if (!packingResult) return null;
-
-  return (
-    <div className="visualization-container">
-      <Canvas camera={{ position: [100, 100, 100], fov: 50 }}>
-        <ambientLight intensity={0.5} />
-        <pointLight position={[100, 100, 100]} intensity={1} />
-        <directionalLight position={[-50, 50, 50]} intensity={0.8} />
-
-        <ShippingBox dimensions={packingResult.box} />
-
-        {packingResult.packed_items.map((item, index) => (
-          <CylindricalItem
-            key={index}
-            item={item}
-            color={getColorForItem(item.name)}
-            isSelected={selectedItem === item.name}
-            onSelect={() => setSelectedItem(selectedItem === item.name ? null : item.name)}
-          />
-        ))}
-
-        <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
-        <gridHelper
-          args={[200, 20, "#bbbbbb", "#eeeeee"]}
-          position={[packingResult.box.width / 2, 0, packingResult.box.length / 2]}
-        />
-      </Canvas>
-
-      <div className="visualization-controls">
-        <p>Drag to rotate • Scroll to zoom • Shift+drag to pan</p>
-      </div>
-    </div>
-  );
+// Predefined box sizes
+const boxSizes = {
+  S: { width: 30, length: 30, height: 30 },
+  M: { width: 40, length: 40, height: 40 },
+  L: { width: 50, length: 50, height: 50 },
+  XL: { width: 60, length: 60, height: 60 },
 };
 
-// Helper function to get color for an item
-const getColorForItem = (name: string): string => {
-  const productName = name.split("-")[0]; // Handle numbered suffixes
-  const product = DEFAULT_PRODUCTS.find((p) => p.name === productName);
-  return product?.color || "#cccccc";
+// Colors for different supplement types
+const itemColors: Record<string, string> = {
+  "whey-protein": "#ff8c00",
+  "pre-workout": "#ffa500",
+  creatine: "#ff4500",
+  multivitamin: "#ff7f50",
+  thermogenic: "#ff6347",
+  "whey-trial": "#ffd700",
 };
 
-// Main App Component
+// App Component
 const App: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>(DEFAULT_PRODUCTS);
-  const [customBox, setCustomBox] = useState<Dimension | null>(null);
+  const [supplements, setSupplements] = useState<Record<string, Dimension>>({});
+  const [selectedSupplements, setSelectedSupplements] = useState<string[]>([]);
+  const [selectedBoxSize, setSelectedBoxSize] = useState<keyof typeof boxSizes>("M");
   const [packingResult, setPackingResult] = useState<PackingResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Handle product changes
-  const handleProductsChange = (updatedProducts: Product[]) => {
-    setProducts(updatedProducts);
-    // Reset results when products change
-    setPackingResult(null);
-  };
+  // Load example data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get("/api/example_data");
+        setSupplements(response.data);
+        // By default, select all supplements
+        setSelectedSupplements(Object.keys(response.data));
+      } catch (err) {
+        setError("Failed to load example data");
+        console.error(err);
+      }
+    };
 
-  // Handle box changes
-  const handleBoxChange = (box: Dimension | null) => {
-    setCustomBox(box);
-    // Reset results when box changes
-    setPackingResult(null);
-  };
-
-  // Calculate total items
-  const totalItems = products.reduce((sum, product) => sum + product.quantity, 0);
+    fetchData();
+  }, []);
 
   // Handle optimize request
   const handleOptimize = async () => {
-    if (totalItems === 0) return;
-
     setLoading(true);
     setError(null);
 
     try {
-      // Build the supplements data based on quantities
-      const supplements: Record<string, Dimension> = {};
+      // Filter to only include selected supplements
+      const selectedSupplementsData = Object.entries(supplements)
+        .filter(([name]) => selectedSupplements.includes(name))
+        .reduce((acc, [name, dimensions]) => {
+          acc[name] = dimensions;
+          return acc;
+        }, {} as Record<string, Dimension>);
 
-      products.forEach((product) => {
-        for (let i = 0; i < product.quantity; i++) {
-          // Add numbered suffix for multiple items of the same type
-          const itemName = product.quantity > 1 ? `${product.name}-${i + 1}` : product.name;
-          supplements[itemName] = product.dimensions;
-        }
-      });
+      const payload = {
+        supplements: selectedSupplementsData,
+        box_size: boxSizes[selectedBoxSize],
+      };
 
-      const response = await axios.post("http://localhost:8000/optimize", {
-        supplements,
-        box_size: customBox,
-      });
+      console.log("Sending payload:", payload);
+
+      const response = await axios.post("/api/optimize", payload);
+      console.log("Received response:", response.data);
 
       setPackingResult(response.data);
     } catch (err) {
-      setError("Optimization failed. Please check your server connection and try again.");
-      console.error(err);
+      console.error("Error during optimization:", err);
+      setError("Optimization failed: " + (err instanceof Error ? err.message : String(err)));
     } finally {
       setLoading(false);
     }
   };
 
+  // Handle supplement selection toggle
+  const toggleSupplement = (name: string) => {
+    setSelectedSupplements((prev) => (prev.includes(name) ? prev.filter((item) => item !== name) : [...prev, name]));
+  };
+
+  // 3D Box Component
+  const Box: React.FC<{ dimensions: BoxDimensions }> = ({ dimensions }) => {
+    return (
+      <mesh position={[dimensions.width / 2, dimensions.length / 2, dimensions.height / 2]}>
+        <boxGeometry args={[dimensions.width, dimensions.length, dimensions.height]} />
+        <meshStandardMaterial wireframe color="#ffffff" />
+      </mesh>
+    );
+  };
+
+  // 3D Item Component
+  const Item: React.FC<{ item: PackedItem; color: string }> = ({ item, color }) => {
+    // Get dimensions based on rotation
+    let width = item.width;
+    let length = item.length;
+    let height = item.height;
+
+    // Apply rotation
+    if (item.rotation === 1) {
+      [width, height, length] = [width, length, height];
+    } else if (item.rotation === 2) {
+      [width, length, height] = [length, width, height];
+    } else if (item.rotation === 3) {
+      [width, length, height] = [length, height, width];
+    } else if (item.rotation === 4) {
+      [width, length, height] = [height, width, length];
+    } else if (item.rotation === 5) {
+      [width, length, height] = [height, length, width];
+    }
+
+    return (
+      <mesh position={[item.position[0] + width / 2, item.position[1] + length / 2, item.position[2] + height / 2]}>
+        <boxGeometry args={[width, length, height]} />
+        <meshStandardMaterial color={color} transparent opacity={0.8} />
+        <meshStandardMaterial wireframe color="#222222" />
+      </mesh>
+    );
+  };
+
+  // Scene Component
+  const Scene: React.FC<{ packingResult: PackingResult | null }> = ({ packingResult }) => {
+    // Use useRef to keep a reference to the packingResult
+    const resultRef = useRef(packingResult);
+
+    // Only update the ref if packingResult is not null
+    useEffect(() => {
+      if (packingResult) {
+        resultRef.current = packingResult;
+      }
+    }, [packingResult]);
+
+    // Use the ref's current value, falling back to packingResult
+    const result = resultRef.current || packingResult;
+
+    if (!result) return null;
+
+    return (
+      <Canvas
+        camera={{ position: [100, 100, 100], fov: 50 }}
+        style={{ height: "500px", width: "100%" }}
+        frameloop="demand"
+        dpr={[1, 2]}
+        gl={{ preserveDrawingBuffer: true }}
+      >
+        <color attach="background" args={["#1a1a1a"]} />
+        <ambientLight intensity={0.5} />
+        <pointLight position={[10, 10, 10]} />
+        <OrbitControls enableDamping={false} />
+
+        <Box dimensions={result.box} />
+
+        {result.packed_items.map((item, index) => (
+          <Item key={`${item.name}-${index}`} item={item} color={itemColors[item.name] || "#cccccc"} />
+        ))}
+      </Canvas>
+    );
+  };
+
   return (
     <div className="app">
-      <header className="app-header">
-        <h1>Supplement Shipping Optimizer</h1>
-        <p>Efficiently pack your cylindrical supplement products for shipping</p>
-      </header>
+      <h1>Otimizador de Envio de Suplementos</h1>
 
-      <div className="app-container">
-        <div className="configuration-panel">
-          <ProductManager initialProducts={products} onProductsChange={handleProductsChange} />
+      <div className="container">
+        <div className="form-section">
+          <h2>Select Products</h2>
+          <div className="product-selection">
+            {Object.entries(supplements).map(([name, dimensions]) => (
+              <div key={name} className="product-item">
+                <label className="checkbox-container">
+                  <input
+                    type="checkbox"
+                    checked={selectedSupplements.includes(name)}
+                    onChange={() => toggleSupplement(name)}
+                  />
+                  <span className="checkmark"></span>
+                  <span className="product-name">{name}</span>
+                  <span className="product-dimensions">
+                    {dimensions.width}×{dimensions.length}×{dimensions.height} cm
+                  </span>
+                </label>
+              </div>
+            ))}
+          </div>
 
-          <BoxSettings
-            defaultBox={{ width: 40, length: 40, height: 40 }}
-            onBoxChange={handleBoxChange}
-            onOptimize={handleOptimize}
-            loading={loading}
-            totalItems={totalItems}
-          />
+          <h2>Select Box Size</h2>
+          <div className="box-selection">
+            {(Object.keys(boxSizes) as Array<keyof typeof boxSizes>).map((size) => (
+              <button
+                key={size}
+                className={`box-size-button ${selectedBoxSize === size ? "selected" : ""}`}
+                onClick={() => setSelectedBoxSize(size)}
+              >
+                {size} - {boxSizes[size].width}×{boxSizes[size].length}×{boxSizes[size].height} cm
+              </button>
+            ))}
+          </div>
+
+          <button className="optimize-button" onClick={handleOptimize} disabled={loading}>
+            {loading ? "Optimizing..." : "Optimize Packing"}
+          </button>
 
           {error && <div className="error-message">{error}</div>}
         </div>
 
-        <div className="results-panel">
-          <div className="visualization-section">
-            <h2>3D Visualization</h2>
-            {loading && (
-              <div className="loading-container">
-                <div className="spinner"></div>
-                <p>Optimizing packing arrangement...</p>
+        <div className="visualization-section">
+          <h2>3D Visualization</h2>
+
+          {packingResult ? (
+            <>
+              <div className="results-summary">
+                <h3>Results</h3>
+                <p>
+                  Box size: {packingResult.box.width}×{packingResult.box.length}×{packingResult.box.height} cm
+                </p>
+                <p>Volume utilization: {packingResult.box.utilization.toFixed(2)}%</p>
+                <p>Items packed: {packingResult.total_items_packed}</p>
+                {packingResult.unpacked_items.length > 0 && (
+                  <p>Items not packed: {packingResult.unpacked_items.join(", ")}</p>
+                )}
               </div>
-            )}
 
-            {!loading && packingResult && <Visualization packingResult={packingResult} />}
-
-            {!loading && !packingResult && (
-              <div className="empty-visualization">
-                <div className="empty-icon">📦</div>
-                <p>Run the optimizer to see the 3D visualization</p>
+              <div className="canvas-container">
+                <Scene packingResult={packingResult} />
               </div>
-            )}
-          </div>
-
-          <PackingResults result={packingResult} loading={loading} />
+            </>
+          ) : (
+            <div className="empty-state">
+              <p>Run the optimizer to see the 3D visualization</p>
+            </div>
+          )}
         </div>
       </div>
-
-      <footer className="app-footer">
-        <p>&copy; 2025 Supplement Shipping Optimizer</p>
-      </footer>
     </div>
   );
 };
