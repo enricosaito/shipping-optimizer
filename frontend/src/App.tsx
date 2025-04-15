@@ -1,8 +1,9 @@
-// App.tsx
+// App.tsx with enhanced 3D visualization
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, Text } from "@react-three/drei";
+import * as THREE from "three";
 import "./App.css";
 
 // Types
@@ -45,24 +46,35 @@ const boxSizes = {
   XL: { width: 60, length: 60, height: 60 },
 };
 
-// Colors for different supplement types
+// Colors for different supplement types - Fill colors
 const itemColors: Record<string, string> = {
-  "whey-protein": "#ff8c00",
-  "pre-workout": "#ffa500",
-  creatine: "#ff4500",
-  multivitamin: "#ff7f50",
-  thermogenic: "#ff6347",
-  "whey-trial": "#ffd700",
+  "whey-protein": "#ff8c00", // Dark Orange
+  "pre-workout": "#ffa500", // Orange
+  creatine: "#ff4500", // Orange Red
+  multivitamin: "#ff7f50", // Coral
+  thermogenic: "#ff6347", // Tomato
+  "whey-trial": "#ffd700", // Gold
+};
+
+// Edge colors for different supplement types
+const edgeColors: Record<string, string> = {
+  "whey-protein": "#ffb347", // Lighter orange
+  "pre-workout": "#ffc04d", // Lighter orange
+  creatine: "#ff6e4a", // Lighter orange-red
+  multivitamin: "#ffa07a", // Lighter coral
+  thermogenic: "#ff8c69", // Lighter tomato
+  "whey-trial": "#ffdf5e", // Lighter gold
 };
 
 // App Component
 const App: React.FC = () => {
   const [supplements, setSupplements] = useState<Record<string, Dimension>>({});
-  const [selectedSupplements, setSelectedSupplements] = useState<string[]>([]);
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [selectedBoxSize, setSelectedBoxSize] = useState<keyof typeof boxSizes>("M");
   const [packingResult, setPackingResult] = useState<PackingResult | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showLabels, setShowLabels] = useState(true);
 
   // Load example data
   useEffect(() => {
@@ -70,8 +82,13 @@ const App: React.FC = () => {
       try {
         const response = await axios.get("/api/example_data");
         setSupplements(response.data);
-        // By default, select all supplements
-        setSelectedSupplements(Object.keys(response.data));
+
+        // Initialize quantities to 1 for each supplement
+        const initialQuantities: Record<string, number> = {};
+        Object.keys(response.data).forEach((name) => {
+          initialQuantities[name] = 1;
+        });
+        setQuantities(initialQuantities);
       } catch (err) {
         setError("Failed to load example data");
         console.error(err);
@@ -87,16 +104,21 @@ const App: React.FC = () => {
     setError(null);
 
     try {
-      // Filter to only include selected supplements
-      const selectedSupplementsData = Object.entries(supplements)
-        .filter(([name]) => selectedSupplements.includes(name))
-        .reduce((acc, [name, dimensions]) => {
-          acc[name] = dimensions;
-          return acc;
-        }, {} as Record<string, Dimension>);
+      // Create expanded supplements list with duplicates based on quantities
+      const expandedSupplements: Record<string, Dimension> = {};
+
+      Object.entries(quantities).forEach(([name, quantity]) => {
+        if (quantity > 0) {
+          for (let i = 0; i < quantity; i++) {
+            // Create unique name for each duplicate item
+            const uniqueName = quantity > 1 ? `${name}-${i + 1}` : name;
+            expandedSupplements[uniqueName] = supplements[name];
+          }
+        }
+      });
 
       const payload = {
-        supplements: selectedSupplementsData,
+        supplements: expandedSupplements,
         box_size: boxSizes[selectedBoxSize],
       };
 
@@ -114,9 +136,12 @@ const App: React.FC = () => {
     }
   };
 
-  // Handle supplement selection toggle
-  const toggleSupplement = (name: string) => {
-    setSelectedSupplements((prev) => (prev.includes(name) ? prev.filter((item) => item !== name) : [...prev, name]));
+  // Handle quantity change
+  const handleQuantityChange = (name: string, value: number) => {
+    setQuantities((prev) => ({
+      ...prev,
+      [name]: Math.max(0, value), // Ensure non-negative values
+    }));
   };
 
   // 3D Box Component
@@ -124,13 +149,25 @@ const App: React.FC = () => {
     return (
       <mesh position={[dimensions.width / 2, dimensions.length / 2, dimensions.height / 2]}>
         <boxGeometry args={[dimensions.width, dimensions.length, dimensions.height]} />
-        <meshStandardMaterial wireframe color="#ffffff" />
+        <meshStandardMaterial wireframe color="#ffffff" wireframeLinewidth={2} />
       </mesh>
     );
   };
 
-  // 3D Item Component
-  const Item: React.FC<{ item: PackedItem; color: string }> = ({ item, color }) => {
+  // Extract the base name (remove -X suffix if present)
+  const getBaseName = (name: string): string => {
+    const match = name.match(/^(.+?)(?:-\d+)?$/);
+    return match ? match[1] : name;
+  };
+
+  // Get display name (show the number suffix if present)
+  const getDisplayName = (name: string): string => {
+    const match = name.match(/^(.+?)-(\d+)$/);
+    return match ? `${match[1]} #${match[2]}` : name;
+  };
+
+  // 3D Item Component - Enhanced with custom wireframe effect
+  const Item: React.FC<{ item: PackedItem; color: string; edgeColor: string }> = ({ item, color, edgeColor }) => {
     // Get dimensions based on rotation
     let width = item.width;
     let length = item.length;
@@ -149,12 +186,44 @@ const App: React.FC = () => {
       [width, length, height] = [height, length, width];
     }
 
+    const position: [number, number, number] = [
+      item.position[0] + width / 2,
+      item.position[1] + length / 2,
+      item.position[2] + height / 2,
+    ];
+
+    const displayName = getDisplayName(item.name);
+
     return (
-      <mesh position={[item.position[0] + width / 2, item.position[1] + length / 2, item.position[2] + height / 2]}>
-        <boxGeometry args={[width, length, height]} />
-        <meshStandardMaterial color={color} transparent opacity={0.8} />
-        <meshStandardMaterial wireframe color="#222222" />
-      </mesh>
+      <group>
+        {/* Main box with solid fill */}
+        <mesh position={position}>
+          <boxGeometry args={[width, length, height]} />
+          <meshStandardMaterial color={color} transparent opacity={0.7} />
+        </mesh>
+
+        {/* Custom wireframe with colored edges */}
+        <lineSegments position={position}>
+          <edgesGeometry args={[new THREE.BoxGeometry(width, length, height)]} />
+          <lineBasicMaterial color={edgeColor} linewidth={3} />
+        </lineSegments>
+
+        {/* Item label */}
+        {showLabels && (
+          <Text
+            position={[position[0], position[1], position[2] + height / 2 + 1]}
+            fontSize={2}
+            color={edgeColor}
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.1}
+            outlineColor="#000000"
+            maxWidth={width * 1.5}
+          >
+            {displayName}
+          </Text>
+        )}
+      </group>
     );
   };
 
@@ -185,45 +254,72 @@ const App: React.FC = () => {
       >
         <color attach="background" args={["#1a1a1a"]} />
         <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} />
+        <pointLight position={[10, 10, 10]} intensity={1.5} />
+        <spotLight position={[0, 100, 100]} angle={0.3} penumbra={1} intensity={0.8} castShadow />
+
         <OrbitControls enableDamping={false} />
 
         <Box dimensions={result.box} />
 
-        {result.packed_items.map((item, index) => (
-          <Item key={`${item.name}-${index}`} item={item} color={itemColors[item.name] || "#cccccc"} />
-        ))}
+        {result.packed_items.map((item, index) => {
+          // Get base name for color lookup
+          const baseName = getBaseName(item.name);
+          return (
+            <Item
+              key={`${item.name}-${index}`}
+              item={item}
+              color={itemColors[baseName] || "#cccccc"}
+              edgeColor={edgeColors[baseName] || "#ffffff"}
+            />
+          );
+        })}
       </Canvas>
     );
   };
 
   return (
     <div className="app">
-      <h1>Otimizador de Envio de Suplementos</h1>
+      <h1>Otimizador de Eficiência de Envio - Silva Nutrition</h1>
 
       <div className="container">
         <div className="form-section">
-          <h2>Select Products</h2>
+          <h2>Selecionar Produtos</h2>
           <div className="product-selection">
             {Object.entries(supplements).map(([name, dimensions]) => (
               <div key={name} className="product-item">
-                <label className="checkbox-container">
-                  <input
-                    type="checkbox"
-                    checked={selectedSupplements.includes(name)}
-                    onChange={() => toggleSupplement(name)}
-                  />
-                  <span className="checkmark"></span>
+                <div className="product-info">
                   <span className="product-name">{name}</span>
                   <span className="product-dimensions">
                     {dimensions.width}×{dimensions.length}×{dimensions.height} cm
                   </span>
-                </label>
+                </div>
+                <div className="quantity-control">
+                  <button
+                    className="quantity-button"
+                    onClick={() => handleQuantityChange(name, (quantities[name] || 0) - 1)}
+                    disabled={(quantities[name] || 0) <= 0}
+                  >
+                    -
+                  </button>
+                  <input
+                    type="number"
+                    min="0"
+                    className="quantity-input"
+                    value={quantities[name] || 0}
+                    onChange={(e) => handleQuantityChange(name, parseInt(e.target.value) || 0)}
+                  />
+                  <button
+                    className="quantity-button"
+                    onClick={() => handleQuantityChange(name, (quantities[name] || 0) + 1)}
+                  >
+                    +
+                  </button>
+                </div>
               </div>
             ))}
           </div>
 
-          <h2>Select Box Size</h2>
+          <h2>Selecionar Tamanho da Caixa</h2>
           <div className="box-selection">
             {(Object.keys(boxSizes) as Array<keyof typeof boxSizes>).map((size) => (
               <button
@@ -236,27 +332,35 @@ const App: React.FC = () => {
             ))}
           </div>
 
+          <div className="visualization-controls">
+            <label className="toggle-container">
+              <input type="checkbox" checked={showLabels} onChange={() => setShowLabels(!showLabels)} />
+              <span className="toggle-slider"></span>
+              <span className="toggle-label">Mostrar Rótulos</span>
+            </label>
+          </div>
+
           <button className="optimize-button" onClick={handleOptimize} disabled={loading}>
-            {loading ? "Optimizing..." : "Optimize Packing"}
+            {loading ? "Otimizando..." : "Otimizar Empacotamento"}
           </button>
 
           {error && <div className="error-message">{error}</div>}
         </div>
 
         <div className="visualization-section">
-          <h2>3D Visualization</h2>
+          <h2>Visualização 3D</h2>
 
           {packingResult ? (
             <>
               <div className="results-summary">
-                <h3>Results</h3>
+                <h3>Resultados</h3>
                 <p>
-                  Box size: {packingResult.box.width}×{packingResult.box.length}×{packingResult.box.height} cm
+                  Tamanho da Caixa: {packingResult.box.width}×{packingResult.box.length}×{packingResult.box.height} cm
                 </p>
-                <p>Volume utilization: {packingResult.box.utilization.toFixed(2)}%</p>
-                <p>Items packed: {packingResult.total_items_packed}</p>
+                <p>Utilização do Volume: {packingResult.box.utilization.toFixed(2)}%</p>
+                <p>Itens empacotados: {packingResult.total_items_packed}</p>
                 {packingResult.unpacked_items.length > 0 && (
-                  <p>Items not packed: {packingResult.unpacked_items.join(", ")}</p>
+                  <p>Itens não empacotados: {packingResult.unpacked_items.length} items</p>
                 )}
               </div>
 
@@ -266,7 +370,7 @@ const App: React.FC = () => {
             </>
           ) : (
             <div className="empty-state">
-              <p>Run the optimizer to see the 3D visualization</p>
+              <p>Rode o otimizador para ver a visualização 3D</p>
             </div>
           )}
         </div>
