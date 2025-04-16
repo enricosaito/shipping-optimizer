@@ -49,21 +49,21 @@ const boxSizes = {
 // Colors for different supplement types - Fill colors
 const itemColors: Record<string, string> = {
   "whey-protein": "#ff8c00", // Dark Orange
-  "pre-workout": "#ffa500", // Orange
-  creatine: "#ff4500", // Orange Red
-  multivitamin: "#ff7f50", // Coral
-  thermogenic: "#ff6347", // Tomato
-  "whey-trial": "#ffd700", // Gold
+  "pre-treino": "#ffa500", // Orange
+  creatina: "#ff4500", // Orange Red
+  multivitaminico: "#ff7f50", // Coral
+  termogenico: "#ff6347", // Tomato
+  "whey-sache": "#ffd700", // Gold
 };
 
 // Edge colors for different supplement types
 const edgeColors: Record<string, string> = {
   "whey-protein": "#ffb347", // Lighter orange
-  "pre-workout": "#ffc04d", // Lighter orange
-  creatine: "#ff6e4a", // Lighter orange-red
-  multivitamin: "#ffa07a", // Lighter coral
-  thermogenic: "#ff8c69", // Lighter tomato
-  "whey-trial": "#ffdf5e", // Lighter gold
+  "pre-treino": "#ffc04d", // Lighter orange
+  creatina: "#ff6e4a", // Lighter orange-red
+  multivitaminico: "#ffa07a", // Lighter coral
+  termogenico: "#ff8c69", // Lighter tomato
+  "whey-sache": "#ffdf5e", // Lighter gold
 };
 
 // App Component

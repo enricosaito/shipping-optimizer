@@ -237,27 +237,27 @@ if __name__ == "__main__":
             "length": 16,
             "height": 26
         },
-        "pre-workout": {
+        "pre-treino": {
             "width": 12,
             "length": 12,
             "height": 12
         },
-        "creatine": {
+        "creatina": {
             "width": 12,
             "length": 12,
             "height": 12
         },
-        "multivitamin": {
+        "multivitaminico": {
             "width": 7,
             "length": 7,
             "height": 14
         },
-        "thermogenic": {
+        "termogenico": {
             "width": 7,
             "length": 7,
             "height": 12
         },
-        "whey-trial": {
+        "whey-sache": {
             "width": 2,
             "length": 11,
             "height": 16
