@@ -83,10 +83,10 @@ const App: React.FC = () => {
         const response = await axios.get("/api/example_data");
         setSupplements(response.data);
 
-        // Initialize quantities to 1 for each supplement
+        // Initialize quantities to 0 for each supplement
         const initialQuantities: Record<string, number> = {};
         Object.keys(response.data).forEach((name) => {
-          initialQuantities[name] = 1;
+          initialQuantities[name] = 0;
         });
         setQuantities(initialQuantities);
       } catch (err) {
