@@ -1,10 +1,10 @@
 // App.tsx with enhanced 3D visualization
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { Card, CardContent, CardHeader, CardTitle } from "@shadcn/ui/card";
-import { Input } from "@shadcn/ui/input";
-import { Button } from "@shadcn/ui/button";
-import { Alert, AlertTitle, AlertDescription } from "@shadcn/ui/alert";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 
 const App: React.FC = () => {
   const [barcode, setBarcode] = useState("");
