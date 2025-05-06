@@ -3,6 +3,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { getNfeById, getNfeByAccessKey } from "./services/blingService";
 import axios from "axios";
+import { Request, Response } from "express";
 
 dotenv.config();
 
@@ -12,16 +13,22 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// In-memory storage for the access token (for development only)
+let blingAccessToken: string | null = null;
+
 // Route to get NFE by access key
-app.get("/api/nfe", async (req, res) => {
+app.get("/api/nfe", async (req: Request, res: Response): Promise<void> => {
   try {
-    const { chaveAcesso } = req.query;
-
-    if (!chaveAcesso) {
-      return res.status(400).json({ error: "Access key is required" });
+    if (!blingAccessToken) {
+      res.status(401).json({ error: "Bling access token not set. Please authenticate first." });
+      return;
     }
-
-    const nfeData = await getNfeByAccessKey(chaveAcesso as string);
+    const { chaveAcesso } = req.query;
+    if (!chaveAcesso) {
+      res.status(400).json({ error: "Access key is required" });
+      return;
+    }
+    const nfeData = await getNfeByAccessKey(chaveAcesso as string, blingAccessToken);
     res.json(nfeData);
   } catch (error) {
     console.error("Error fetching NFE:", error);
@@ -30,10 +37,14 @@ app.get("/api/nfe", async (req, res) => {
 });
 
 // Route to get NFE details by ID
-app.get("/api/nfe/:id", async (req, res) => {
+app.get("/api/nfe/:id", async (req: Request, res: Response): Promise<void> => {
   try {
+    if (!blingAccessToken) {
+      res.status(401).json({ error: "Bling access token not set. Please authenticate first." });
+      return;
+    }
     const { id } = req.params;
-    const nfeDetails = await getNfeById(id);
+    const nfeDetails = await getNfeById(id, blingAccessToken);
     res.json(nfeDetails);
   } catch (error) {
     console.error("Error fetching NFE details:", error);
@@ -52,10 +63,12 @@ app.get("/auth/bling", (req, res) => {
   res.redirect(`https://bling.com.br/Api/v3/oauth/authorize?${params.toString()}`);
 });
 
-app.get("/auth/bling/callback", async (req, res) => {
+app.get("/auth/bling/callback", async (req: Request, res: Response): Promise<void> => {
   const { code } = req.query;
-  if (!code) return res.status(400).send("No code provided");
-
+  if (!code) {
+    res.status(400).send("No code provided");
+    return;
+  }
   try {
     const tokenRes = await axios.post(
       "https://bling.com.br/Api/v3/oauth/token",
@@ -68,7 +81,7 @@ app.get("/auth/bling/callback", async (req, res) => {
       }),
       { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
     );
-    // Save tokenRes.data.access_token securely (e.g., in DB or session)
+    blingAccessToken = tokenRes.data.access_token;
     res.json(tokenRes.data);
   } catch (err) {
     console.error(err);
