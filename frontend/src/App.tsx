@@ -40,10 +40,10 @@ interface PackingResult {
 
 // Predefined box sizes
 const boxSizes = {
-  S: { width: 30, length: 30, height: 30 },
-  M: { width: 40, length: 40, height: 40 },
-  L: { width: 50, length: 50, height: 50 },
-  XL: { width: 60, length: 60, height: 60 },
+  S: { width: 15, length: 14, height: 17 },
+  M: { width: 31, length: 20, height: 18.5 },
+  L: { width: 25, length: 23, height: 35 },
+  XL: { width: 25, length: 23, height: 70 },
 };
 
 // Colors for different supplement types - Fill colors
