@@ -14,7 +14,7 @@ app.use(cors());
 app.use(express.json());
 
 // In-memory storage for the access token (for development only)
-let blingAccessToken: string | null = null;
+let blingAccessToken: string | null = process.env.BLING_ACCESS_TOKEN || null;
 
 // Route to get NFE by access key
 app.get("/api/nfe", async (req: Request, res: Response): Promise<void> => {
