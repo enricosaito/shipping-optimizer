@@ -1,22 +1,6 @@
 import axios from "axios";
-import dotenv from "dotenv";
 
-dotenv.config();
-
-const BLING_API_KEY = process.env.BLING_API_KEY;
 const BLING_API_BASE_URL = "https://api.bling.com.br/Api/v3";
-
-if (!BLING_API_KEY) {
-  throw new Error("BLING_API_KEY is not defined in environment variables");
-}
-
-const blingApi = axios.create({
-  baseURL: BLING_API_BASE_URL,
-  headers: {
-    Authorization: `Bearer ${BLING_API_KEY}`,
-    "Content-Type": "application/json",
-  },
-});
 
 export interface NfeResponse {
   id: number;
@@ -33,9 +17,14 @@ export interface NfeDetails {
   }>;
 }
 
-export const getNfeByAccessKey = async (chaveAcesso: string): Promise<NfeResponse> => {
+export const getNfeByAccessKey = async (chaveAcesso: string, accessToken: string): Promise<NfeResponse> => {
   try {
-    const response = await blingApi.get(`/nfe?chaveAcesso=${chaveAcesso}`);
+    const response = await axios.get(`${BLING_API_BASE_URL}/nfe?chaveAcesso=${chaveAcesso}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error in getNfeByAccessKey:", error);
@@ -43,9 +32,14 @@ export const getNfeByAccessKey = async (chaveAcesso: string): Promise<NfeRespons
   }
 };
 
-export const getNfeById = async (id: string): Promise<NfeDetails> => {
+export const getNfeById = async (id: string, accessToken: string): Promise<NfeDetails> => {
   try {
-    const response = await blingApi.get(`/nfe/${id}`);
+    const response = await axios.get(`${BLING_API_BASE_URL}/nfe/${id}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
     return response.data;
   } catch (error) {
     console.error("Error in getNfeById:", error);
