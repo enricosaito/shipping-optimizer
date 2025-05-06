@@ -75,6 +75,29 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showLabels, setShowLabels] = useState(true);
+  const [barcode, setBarcode] = useState("");
+  const barcodeInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (barcodeInputRef.current) {
+      barcodeInputRef.current.focus();
+    }
+  }, []);
+
+  const handleBarcodeSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!barcode) return;
+    try {
+      const response = await axios.get(`/api/nfe?chaveAcesso=${barcode}`);
+      console.log("NFE response for barcode:", response.data);
+    } catch (err) {
+      console.error("Error fetching NFE for barcode:", err);
+    }
+    setBarcode(""); // Clear input after submit
+    if (barcodeInputRef.current) {
+      barcodeInputRef.current.focus();
+    }
+  };
 
   // Load example data
   useEffect(() => {
@@ -280,6 +303,22 @@ const App: React.FC = () => {
   return (
     <div className="app">
       <h1>Otimizador de Eficiência de Envio - Silva Nutrition</h1>
+
+      {/* Barcode input with autofocus */}
+      <form onSubmit={handleBarcodeSubmit} style={{ marginBottom: 24 }}>
+        <input
+          ref={barcodeInputRef}
+          type="text"
+          value={barcode}
+          onChange={(e) => setBarcode(e.target.value)}
+          placeholder="Escaneie ou digite o código de barras (chaveAcesso)"
+          autoFocus
+          style={{ fontSize: 20, padding: 8, width: 350 }}
+        />
+        <button type="submit" style={{ marginLeft: 8, fontSize: 20, padding: "8px 16px" }}>
+          Buscar NFE
+        </button>
+      </form>
 
       <div className="container">
         <div className="form-section">
