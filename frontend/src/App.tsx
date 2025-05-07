@@ -106,7 +106,7 @@ const App: React.FC = () => {
                       <div className="flex justify-between items-center">
                         <CardTitle className="text-lg text-orange-600">Dados da NFE</CardTitle>
                         <Badge variant="outline" className="bg-amber-900/30 text-orange-300 border-orange-600">
-                          {nfe.id || "ID não disponível"}
+                          {"ID " + nfe?.data?.[0]?.id || "ID não disponível"}
                         </Badge>
                       </div>
                     </CardHeader>
