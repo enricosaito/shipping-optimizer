@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "./componen
 import { Input } from "./components/ui/input";
 import { Button } from "./components/ui/button";
 import { Alert, AlertTitle, AlertDescription } from "./components/ui/alert";
-import { Loader2, FileText, AlertCircle } from "lucide-react";
+import { Loader2, FileText, AlertCircle, Package, Truck, CreditCard, Calendar } from "lucide-react";
 import { ThemeProvider } from "./components/ui/theme-provider";
 import { Badge } from "./components/ui/badge";
 import { motion } from "framer-motion";
@@ -51,12 +51,12 @@ const App: React.FC = () => {
 
   return (
     <ThemeProvider defaultTheme="dark" forcedTheme="dark">
-      <div className="min-h-screen bg-gradient-to-br from-stone-900 via-neutral-900 to-stone-900 flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-stone-900 via-neutral-900 to-stone-900 flex flex-col p-4">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-6xl"
+          className="w-full max-w-7xl mx-auto"
         >
           <Card className="border-orange-600 bg-stone-900/90 backdrop-blur-sm shadow-[0_0_15px_rgba(234,88,12,0.3)]">
             <CardHeader className="pb-4">
@@ -104,72 +104,162 @@ const App: React.FC = () => {
                 </motion.div>
               )}
 
-              {nfe && (
+              {nfeDetails && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4 }}
-                  className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                  transition={{ duration: 0.4, delay: 0.2 }}
+                  className="mt-6"
                 >
-                  <Card className="mt-4 border-stone-700 bg-stone-800/50">
-                    <CardHeader className="pb-2">
-                      <div className="flex justify-between items-center">
-                        <CardTitle className="text-lg text-orange-600">Dados da NFE</CardTitle>
-                        <Badge variant="outline" className="bg-amber-900/30 text-orange-300 border-orange-600">
-                          {"ID " + nfe?.data?.[0]?.id || "ID não disponível"}
-                        </Badge>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2">
-                        <div className="rounded-md bg-stone-950 p-3 border border-stone-800">
-                          <div className="flex justify-between items-center mb-2">
-                            <span className="text-xs text-stone-400">Dados completos</span>
-                            <Badge variant="secondary" className="text-xs bg-stone-800">
-                              JSON
-                            </Badge>
-                          </div>
-                          <pre className="text-xs text-amber-100 overflow-x-auto max-h-60 scrollbar-thin scrollbar-thumb-stone-700 scrollbar-track-stone-900">
-                            {JSON.stringify(nfe, null, 2)}
-                          </pre>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  {nfeDetails && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.4, delay: 0.2 }}
-                    >
-                      <Card className="mt-4 border-stone-700 bg-stone-800/50">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Left Column - KPIs and Customer Info */}
+                    <div className="space-y-6">
+                      {/* KPIs Section */}
+                      <Card className="border-stone-700 bg-stone-800/50">
                         <CardHeader className="pb-2">
-                          <div className="flex justify-between items-center">
-                            <CardTitle className="text-lg text-orange-600">Detalhes da NFE</CardTitle>
-                            <Badge variant="outline" className="bg-amber-900/30 text-orange-300 border-orange-600">
-                              Detalhes
-                            </Badge>
-                          </div>
+                          <CardTitle className="text-lg text-orange-600">Resumo do Pedido</CardTitle>
                         </CardHeader>
                         <CardContent>
-                          <div className="space-y-2">
-                            <div className="rounded-md bg-stone-950 p-3 border border-stone-800">
-                              <div className="flex justify-between items-center mb-2">
-                                <span className="text-xs text-stone-400">Dados detalhados</span>
-                                <Badge variant="secondary" className="text-xs bg-stone-800">
-                                  JSON
-                                </Badge>
-                              </div>
-                              <pre className="text-xs text-amber-100 overflow-x-auto max-h-60 scrollbar-thin scrollbar-thumb-stone-700 scrollbar-track-stone-900">
-                                {JSON.stringify(nfeDetails, null, 2)}
-                              </pre>
+                          <div className="grid grid-cols-2 gap-4">
+                            <Card className="bg-stone-900/50 border-stone-700">
+                              <CardContent className="p-4">
+                                <div className="flex items-center gap-2">
+                                  <Package className="h-5 w-5 text-orange-500" />
+                                  <div>
+                                    <p className="text-sm text-stone-400">Total de Itens</p>
+                                    <p className="text-xl font-semibold text-white">{nfeDetails.data.itens.length}</p>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                            <Card className="bg-stone-900/50 border-stone-700">
+                              <CardContent className="p-4">
+                                <div className="flex items-center gap-2">
+                                  <Truck className="h-5 w-5 text-orange-500" />
+                                  <div>
+                                    <p className="text-sm text-stone-400">Frete</p>
+                                    <p className="text-xl font-semibold text-white">
+                                      R$ {nfeDetails.data.valorFrete.toFixed(2)}
+                                    </p>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                            <Card className="bg-stone-900/50 border-stone-700">
+                              <CardContent className="p-4">
+                                <div className="flex items-center gap-2">
+                                  <CreditCard className="h-5 w-5 text-orange-500" />
+                                  <div>
+                                    <p className="text-sm text-stone-400">Valor Total</p>
+                                    <p className="text-xl font-semibold text-white">
+                                      R$ {nfeDetails.data.valorNota.toFixed(2)}
+                                    </p>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                            <Card className="bg-stone-900/50 border-stone-700">
+                              <CardContent className="p-4">
+                                <div className="flex items-center gap-2">
+                                  <Calendar className="h-5 w-5 text-orange-500" />
+                                  <div>
+                                    <p className="text-sm text-stone-400">Parcelas</p>
+                                    <p className="text-xl font-semibold text-white">
+                                      {nfeDetails.data.parcelas.length}x
+                                    </p>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Customer Information */}
+                      <Card className="border-stone-700 bg-stone-800/50">
+                        <CardHeader className="pb-2">
+                          <CardTitle className="text-lg text-orange-600">Informações do Cliente</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-4">
+                            <div>
+                              <p className="text-sm text-stone-400">Nome</p>
+                              <p className="text-white">{nfeDetails.data.contato.nome}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-stone-400">Email</p>
+                              <p className="text-white">{nfeDetails.data.contato.email}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-stone-400">Telefone</p>
+                              <p className="text-white">{nfeDetails.data.contato.telefone}</p>
+                            </div>
+                            <div>
+                              <p className="text-sm text-stone-400">Endereço</p>
+                              <p className="text-white">
+                                {nfeDetails.data.contato.endereco.endereco}, {nfeDetails.data.contato.endereco.numero}
+                                {nfeDetails.data.contato.endereco.complemento &&
+                                  ` - ${nfeDetails.data.contato.endereco.complemento}`}
+                              </p>
+                              <p className="text-white">
+                                {nfeDetails.data.contato.endereco.bairro}, {nfeDetails.data.contato.endereco.municipio}{" "}
+                                - {nfeDetails.data.contato.endereco.uf}
+                              </p>
+                              <p className="text-white">CEP: {nfeDetails.data.contato.endereco.cep}</p>
                             </div>
                           </div>
                         </CardContent>
                       </Card>
-                    </motion.div>
-                  )}
+                    </div>
+
+                    {/* Right Column - Products List */}
+                    <div className="lg:col-span-2">
+                      <Card className="border-stone-700 bg-stone-800/50 h-full">
+                        <CardHeader className="pb-2">
+                          <div className="flex justify-between items-center">
+                            <CardTitle className="text-lg text-orange-600">Produtos</CardTitle>
+                            <Badge variant="outline" className="bg-amber-900/30 text-orange-300 border-orange-600">
+                              Pedido #{nfeDetails.data.numeroPedidoLoja}
+                            </Badge>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-4">
+                            {nfeDetails.data.itens.map((item: any, index: number) => (
+                              <Card key={index} className="bg-stone-900/50 border-stone-700">
+                                <CardContent className="p-4">
+                                  <div className="flex items-center gap-4">
+                                    <div className="w-16 h-16 bg-stone-800 rounded-lg flex items-center justify-center">
+                                      <Package className="h-8 w-8 text-orange-500" />
+                                    </div>
+                                    <div className="flex-1">
+                                      <div className="flex justify-between items-start">
+                                        <div>
+                                          <h4 className="font-medium text-white">{item.descricao}</h4>
+                                          <p className="text-sm text-stone-400">Código: {item.codigo}</p>
+                                        </div>
+                                        <Badge
+                                          variant="outline"
+                                          className="bg-amber-900/30 text-orange-300 border-orange-600"
+                                        >
+                                          R$ {item.valorTotal.toFixed(2)}
+                                        </Badge>
+                                      </div>
+                                      <div className="mt-2 flex gap-4 text-sm text-stone-400">
+                                        <span>Qtd: {item.quantidade}</span>
+                                        <span>Peso: {item.pesoLiquido}kg</span>
+                                        <span>ICMS: {item.impostos.icms.aliquota}%</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </div>
                 </motion.div>
               )}
             </CardContent>
