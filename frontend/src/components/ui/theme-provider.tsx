@@ -1,6 +1,6 @@
 "use client";
 
-import type * as React from "react";
+import React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
 
 type Theme = "dark" | "light" | "system";
@@ -37,7 +37,12 @@ export function ThemeProvider({
   attribute = "data-theme",
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(() => (localStorage.getItem(storageKey) as Theme) || defaultTheme);
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window !== "undefined") {
+      return (window.localStorage.getItem(storageKey) as Theme) || defaultTheme;
+    }
+    return defaultTheme;
+  });
 
   useEffect(() => {
     const root = window.document.documentElement;
@@ -48,9 +53,9 @@ export function ThemeProvider({
     }
 
     if (disableTransitionOnChange) {
-      root.classList.add("transition-none");
+      root.classList.add("[transition:none]");
       window.setTimeout(() => {
-        root.classList.remove("transition-none");
+        root.classList.remove("[transition:none]");
       }, 0);
     }
 
@@ -66,7 +71,9 @@ export function ThemeProvider({
   const value = {
     theme,
     setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme);
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem(storageKey, theme);
+      }
       setTheme(theme);
     },
   };

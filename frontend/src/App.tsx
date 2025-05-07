@@ -52,7 +52,7 @@ const App: React.FC = () => {
           <Card className="border-purple-700 bg-gray-900/80 backdrop-blur-sm shadow-[0_0_15px_rgba(124,58,237,0.3)]">
             <CardHeader className="pb-4">
               <div className="flex justify-center mb-2">
-                <FileText className="h-10 w-10 text-purple-500" />
+                <FileText className="size-10 text-purple-500" />
               </div>
               <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-purple-400 to-pink-400 text-transparent bg-clip-text">
                 Consulta de NFE
@@ -76,7 +76,7 @@ const App: React.FC = () => {
                   className="bg-purple-600 hover:bg-purple-700 text-white"
                   disabled={loading || !barcode}
                 >
-                  {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                  {loading ? <Loader2 className="size-4 animate-spin me-2" /> : null}
                   {loading ? "Buscando" : "Buscar"}
                 </Button>
               </form>
@@ -88,7 +88,7 @@ const App: React.FC = () => {
                   transition={{ duration: 0.3 }}
                 >
                   <Alert variant="destructive" className="mb-4 bg-red-900/50 border-red-700">
-                    <AlertCircle className="h-4 w-4" />
+                    <AlertCircle className="size-4" />
                     <AlertTitle className="font-semibold">Erro</AlertTitle>
                     <AlertDescription className="text-sm">{error}</AlertDescription>
                   </Alert>
@@ -112,7 +112,6 @@ const App: React.FC = () => {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-2">
-                        {/* You can add more specific NFE fields here */}
                         <div className="rounded-md bg-gray-950 p-3 border border-gray-800">
                           <div className="flex justify-between items-center mb-2">
                             <span className="text-xs text-gray-400">Dados completos</span>
@@ -130,7 +129,7 @@ const App: React.FC = () => {
                 </motion.div>
               )}
             </CardContent>
-            <CardFooter className="flex justify-center pt-0 pb-4">
+            <CardFooter className="flex justify-center pb-4 pt-0">
               <p className="text-gray-500 text-xs">Sistema de consulta NFE • {new Date().getFullYear()}</p>
             </CardFooter>
           </Card>
