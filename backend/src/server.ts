@@ -7,8 +7,14 @@ import { Request, Response } from "express";
 
 dotenv.config();
 
+// Debug logging for environment variables
+console.log("Environment variables loaded:");
+console.log("BLING_CLIENT_ID:", process.env.BLING_CLIENT_ID ? "Set" : "Not set");
+console.log("BLING_REDIRECT_URI:", process.env.BLING_REDIRECT_URI ? "Set" : "Not set");
+console.log("BLING_ACCESS_TOKEN:", process.env.BLING_ACCESS_TOKEN ? "Set" : "Not set");
+
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 8000;
 
 app.use(cors());
 app.use(express.json());
@@ -18,17 +24,24 @@ let blingAccessToken: string | null = process.env.BLING_ACCESS_TOKEN || null;
 
 // Route to get NFE by access key
 app.get("/api/nfe", async (req: Request, res: Response): Promise<void> => {
+  console.log("Received request to /api/nfe");
+  console.log("Query parameters:", req.query);
+  console.log("Headers:", req.headers);
   try {
     if (!blingAccessToken) {
+      console.log("No Bling access token found");
       res.status(401).json({ error: "Bling access token not set. Please authenticate first." });
       return;
     }
     const { chaveAcesso } = req.query;
     if (!chaveAcesso) {
+      console.log("No chaveAcesso provided");
       res.status(400).json({ error: "Access key is required" });
       return;
     }
+    console.log("Making request to Bling API with chaveAcesso:", chaveAcesso);
     const nfeData = await getNfeByAccessKey(chaveAcesso as string, blingAccessToken);
+    console.log("Received response from Bling API");
     res.json(nfeData);
   } catch (error) {
     console.error("Error fetching NFE:", error);
