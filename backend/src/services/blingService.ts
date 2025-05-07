@@ -1,6 +1,29 @@
 import axios from "axios";
+import fs from "fs";
+import path from "path";
 
 const BLING_API_BASE_URL = "https://api.bling.com.br/Api/v3";
+const PRODUCT_IMAGES_FILE = path.join(__dirname, "../data/productImages.json");
+
+// Helper function to read product images from file
+const readProductImages = (): Record<string, string> => {
+  try {
+    const data = fs.readFileSync(PRODUCT_IMAGES_FILE, "utf8");
+    return JSON.parse(data).productImages;
+  } catch (error) {
+    console.error("Error reading product images file:", error);
+    return {};
+  }
+};
+
+// Helper function to write product images to file
+const writeProductImages = (images: Record<string, string>) => {
+  try {
+    fs.writeFileSync(PRODUCT_IMAGES_FILE, JSON.stringify({ productImages: images }, null, 2));
+  } catch (error) {
+    console.error("Error writing product images file:", error);
+  }
+};
 
 export interface NfeResponse {
   id: number;
@@ -69,6 +92,13 @@ export const getNfeById = async (id: string, accessToken: string): Promise<NfeDe
 };
 
 export const getProductImage = async (codigo: string, accessToken: string): Promise<string | null> => {
+  // First check local storage
+  const productImages = readProductImages();
+  if (productImages[codigo]) {
+    return productImages[codigo];
+  }
+
+  // If not in local storage, fetch from API
   try {
     const response = await axios.get(`${BLING_API_BASE_URL}/produtos?codigo=${codigo}`, {
       headers: {
@@ -78,8 +108,11 @@ export const getProductImage = async (codigo: string, accessToken: string): Prom
     });
 
     const products = response.data?.data || [];
-    if (products.length > 0) {
-      return products[0].imagemURL || null;
+    if (products.length > 0 && products[0].imagemURL) {
+      // Save to local storage
+      productImages[codigo] = products[0].imagemURL;
+      writeProductImages(productImages);
+      return products[0].imagemURL;
     }
     return null;
   } catch (error) {
