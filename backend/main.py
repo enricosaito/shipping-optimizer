@@ -129,7 +129,7 @@ async def get_example_data():
         "whey-protein": {
             "width": 16,
             "length": 16,
-            "height": 26
+            "height": 25
         },
         "pre-treino": {
             "width": 12,
