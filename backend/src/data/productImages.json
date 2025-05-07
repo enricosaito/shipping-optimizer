@@ -1,3 +1,8 @@
 {
-  "productImages": {}
+  "productImages": {
+    "P2-1-7": "https://orgbling.s3.amazonaws.com/6a3a3c6f0550b42f97ed7ad5a449dd74/t/89cf779ba59d20f3f7642106f48134fa?AWSAccessKeyId=AKIATCLMSGFX4J7TU445&Expires=1746663158&Signature=9EVwfAHYyEazYlei5D5tOYVTrgo%3D",
+    "P2-1-6": "https://orgbling.s3.amazonaws.com/6a3a3c6f0550b42f97ed7ad5a449dd74/t/f9bf4bacce3a29821cce1fe26682d8e2?AWSAccessKeyId=AKIATCLMSGFX4J7TU445&Expires=1746663159&Signature=E91AJidXwjnrjFUbHGkOneVYDZE%3D",
+    "P2-1-1": "https://orgbling.s3.amazonaws.com/6a3a3c6f0550b42f97ed7ad5a449dd74/t/af02d9c40f3643eaf572254ac807e655?AWSAccessKeyId=AKIATCLMSGFX4J7TU445&Expires=1746663167&Signature=3eXTNNtHQg51o6wjCnyZufrCZNY%3D",
+    "P2-1-2": "https://orgbling.s3.amazonaws.com/6a3a3c6f0550b42f97ed7ad5a449dd74/t/ee0753e408470d8fd6b469db669f9092?AWSAccessKeyId=AKIATCLMSGFX4J7TU445&Expires=1746663188&Signature=E2oMG6rNki%2FqHiXqMQ7j2S%2FNHGA%3D"
+  }
 }
