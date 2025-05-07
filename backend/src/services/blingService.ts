@@ -92,31 +92,6 @@ export const getNfeById = async (id: string, accessToken: string): Promise<NfeDe
 };
 
 export const getProductImage = async (codigo: string, accessToken: string): Promise<string | null> => {
-  // First check local storage
   const productImages = readProductImages();
-  if (productImages[codigo]) {
-    return productImages[codigo];
-  }
-
-  // If not in local storage, fetch from API
-  try {
-    const response = await axios.get(`${BLING_API_BASE_URL}/produtos?codigo=${codigo}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    });
-
-    const products = response.data?.data || [];
-    if (products.length > 0 && products[0].imagemURL) {
-      // Save to local storage
-      productImages[codigo] = products[0].imagemURL;
-      writeProductImages(productImages);
-      return products[0].imagemURL;
-    }
-    return null;
-  } catch (error) {
-    console.error("Error in getProductImage:", error);
-    return null;
-  }
+  return productImages[codigo] || null;
 };
