@@ -67,3 +67,23 @@ export const getNfeById = async (id: string, accessToken: string): Promise<NfeDe
     throw error;
   }
 };
+
+export const getProductImage = async (codigo: string, accessToken: string): Promise<string | null> => {
+  try {
+    const response = await axios.get(`${BLING_API_BASE_URL}/produtos?codigo=${codigo}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const products = response.data?.data || [];
+    if (products.length > 0) {
+      return products[0].imagemURL || null;
+    }
+    return null;
+  } catch (error) {
+    console.error("Error in getProductImage:", error);
+    return null;
+  }
+};
