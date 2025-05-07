@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "./components/ui/card";
 import { Input } from "./components/ui/input";
@@ -8,6 +8,10 @@ import { Loader2, FileText, AlertCircle, Package, Truck, CreditCard, Calendar } 
 import { ThemeProvider } from "./components/ui/theme-provider";
 import { Badge } from "./components/ui/badge";
 import { motion } from "framer-motion";
+import { NFESearch } from "./components/NFESearch";
+import { NFEKPIs } from "./components/NFEKPIs";
+import { CustomerInfo } from "./components/CustomerInfo";
+import { ProductList } from "./components/ProductList";
 
 const App: React.FC = () => {
   const [barcode, setBarcode] = useState("");
