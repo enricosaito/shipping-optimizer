@@ -1,0 +1,73 @@
+{
+  "boxes": [
+    {
+      "name": "P",
+      "length_mm": 150.0,
+      "width_mm": 140.0,
+      "height_mm": 170.0,
+      "exceptions": {
+        "Whey + Creatina": "Caixa M"
+      }
+    },
+    {
+      "name": "M",
+      "length_mm": 310.0,
+      "width_mm": 200.0,
+      "height_mm": 185.0,
+      "exceptions": {
+        "3 + Wheys": "Caixa G x 2"
+      }
+    },
+    {
+      "name": "G",
+      "length_mm": 250.0,
+      "width_mm": 230.0,
+      "height_mm": 350.0,
+      "exceptions": {}
+    }
+  ],
+  "products": [
+    {
+      "name": "Whey 100% 900g",
+      "length_mm": 151.7,
+      "width_mm": 151.7,
+      "height_mm": 255.0
+    },
+    {
+      "name": "Creatina",
+      "length_mm": 91.5,
+      "width_mm": 91.5,
+      "height_mm": 125.0
+    },
+    {
+      "name": "Pre treino PUNCH",
+      "length_mm": 115.9,
+      "width_mm": 115.9,
+      "height_mm": 119.0
+    },
+    {
+      "name": "Sachê Whey 100% 32g",
+      "length_mm": 100.0,
+      "width_mm": 5.0,
+      "height_mm": 150.0
+    },
+    {
+      "name": "Flame termo",
+      "length_mm": 65.12,
+      "width_mm": 65.12,
+      "height_mm": 121.0
+    },
+    {
+      "name": "Multivitaminico",
+      "length_mm": 151.7,
+      "width_mm": 151.7,
+      "height_mm": 255.0
+    },
+    {
+      "name": "Whey ISO",
+      "length_mm": 151.7,
+      "width_mm": 151.7,
+      "height_mm": 255.0
+    }
+  ]
+}
