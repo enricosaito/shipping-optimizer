@@ -17,4 +17,8 @@ export default defineConfig({
       "/api": "http://localhost:8000",
     },
   },
+  publicDir: "public",
+  build: {
+    assetsDir: "assets",
+  },
 });
