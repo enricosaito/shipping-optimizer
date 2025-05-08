@@ -1,6 +1,7 @@
 import axios from "axios";
 import fs from "fs";
 import path from "path";
+import { getProductImagePath } from "../data/productImageMapping";
 
 const BLING_API_BASE_URL = "https://api.bling.com.br/Api/v3";
 const PRODUCT_IMAGES_FILE = path.join(__dirname, "../data/productImages.json");
@@ -92,6 +93,6 @@ export const getNfeById = async (id: string, accessToken: string): Promise<NfeDe
 };
 
 export const getProductImage = async (codigo: string, accessToken: string): Promise<string | null> => {
-  const productImages = readProductImages();
-  return productImages[codigo] || null;
+  // For now, we'll just return null as we'll handle the image mapping in the frontend
+  return null;
 };
