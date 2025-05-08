@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "./components/ui/card";
 import { Alert, AlertTitle, AlertDescription } from "./components/ui/alert";
-import { FileText, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 import { ThemeProvider } from "./components/ui/theme-provider";
 import { motion } from "framer-motion";
 import { NFESearch } from "./components/NFESearch";
@@ -49,7 +49,7 @@ const App: React.FC = () => {
           <Card className="border-orange-600 bg-stone-900/90 backdrop-blur-sm shadow-[0_0_15px_rgba(234,88,12,0.3)]">
             <CardHeader className="pb-4">
               <div className="flex justify-center mb-2">
-                <FileText className="h-10 w-10 text-orange-500" />
+                <img src="/assets/nutrition-white-nobg.png" alt="Nutrition Icon" className="h-12 w-12 object-contain" />
               </div>
               <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-orange-600 to-amber-600 text-transparent bg-clip-text">
                 Silva Nutrition - Consulta de NFE
