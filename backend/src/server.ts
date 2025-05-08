@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { getNfeById, getNfeByAccessKey } from "./services/blingService";
+import { getNfeById, getNfeByAccessKey, getProductImage } from "./services/blingService";
 import axios from "axios";
 import { Request, Response } from "express";
 
@@ -62,6 +62,22 @@ app.get("/api/nfe/:id", async (req: Request, res: Response): Promise<void> => {
   } catch (error) {
     console.error("Error fetching NFE details:", error);
     res.status(500).json({ error: "Failed to fetch NFE details" });
+  }
+});
+
+// Route to get product image
+app.get("/api/produtos/:codigo", async (req: Request, res: Response): Promise<void> => {
+  try {
+    if (!blingAccessToken) {
+      res.status(401).json({ error: "Bling access token not set. Please authenticate first." });
+      return;
+    }
+    const { codigo } = req.params;
+    const imageUrl = await getProductImage(codigo, blingAccessToken);
+    res.json({ imagemURL: imageUrl });
+  } catch (error) {
+    console.error("Error fetching product image:", error);
+    res.status(500).json({ error: "Failed to fetch product image" });
   }
 });
 
