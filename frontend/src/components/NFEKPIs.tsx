@@ -17,10 +17,12 @@ export const NFEKPIs: React.FC<NFEKPIsProps> = ({ totalItems, shippingCost, tota
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 gap-4">
-          <Card className="bg-stone-900/50 border-stone-700">
+          <Card className="bg-stone-900/50 border-stone-700 hover:bg-stone-900/70 transition-colors">
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <Package className="h-5 w-5 text-orange-500" />
+                <div className="w-8 h-8 bg-orange-900/30 rounded-full flex items-center justify-center">
+                  <Package className="h-4 w-4 text-orange-500" />
+                </div>
                 <div>
                   <p className="text-sm text-stone-400">Total de Itens</p>
                   <p className="text-xl font-semibold text-white">{totalItems}</p>
@@ -28,10 +30,12 @@ export const NFEKPIs: React.FC<NFEKPIsProps> = ({ totalItems, shippingCost, tota
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-stone-900/50 border-stone-700">
+          <Card className="bg-stone-900/50 border-stone-700 hover:bg-stone-900/70 transition-colors">
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <Truck className="h-5 w-5 text-orange-500" />
+                <div className="w-8 h-8 bg-orange-900/30 rounded-full flex items-center justify-center">
+                  <Truck className="h-4 w-4 text-orange-500" />
+                </div>
                 <div>
                   <p className="text-sm text-stone-400">Frete</p>
                   <p className="text-xl font-semibold text-white">R$ {shippingCost.toFixed(2)}</p>
@@ -39,10 +43,12 @@ export const NFEKPIs: React.FC<NFEKPIsProps> = ({ totalItems, shippingCost, tota
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-stone-900/50 border-stone-700">
+          <Card className="bg-stone-900/50 border-stone-700 hover:bg-stone-900/70 transition-colors">
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <CreditCard className="h-5 w-5 text-orange-500" />
+                <div className="w-8 h-8 bg-orange-900/30 rounded-full flex items-center justify-center">
+                  <CreditCard className="h-4 w-4 text-orange-500" />
+                </div>
                 <div>
                   <p className="text-sm text-stone-400">Valor Total</p>
                   <p className="text-xl font-semibold text-white">R$ {totalValue.toFixed(2)}</p>
@@ -50,10 +56,12 @@ export const NFEKPIs: React.FC<NFEKPIsProps> = ({ totalItems, shippingCost, tota
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-stone-900/50 border-stone-700">
+          <Card className="bg-stone-900/50 border-stone-700 hover:bg-stone-900/70 transition-colors">
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
-                <Calendar className="h-5 w-5 text-orange-500" />
+                <div className="w-8 h-8 bg-orange-900/30 rounded-full flex items-center justify-center">
+                  <Calendar className="h-4 w-4 text-orange-500" />
+                </div>
                 <div>
                   <p className="text-sm text-stone-400">Parcelas</p>
                   <p className="text-xl font-semibold text-white">{installments}x</p>
