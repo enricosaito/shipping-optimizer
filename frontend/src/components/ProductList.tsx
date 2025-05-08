@@ -3,13 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Package } from "lucide-react";
 
-// Import product images
-import creatinaImage from "../../assets/product-images/creatina.jpg";
-import preTreinoImage from "../../assets/product-images/pre-treino.jpg";
-import termogenicoImage from "../../assets/product-images/termogenico.jpg";
-import whey900gImage from "../../assets/product-images/whey-900g.jpg";
-import whey320gImage from "../../assets/product-images/whey-320g.jpg";
-
 interface Product {
   codigo: string;
   descricao: string;
@@ -32,23 +25,23 @@ const getProductImage = (productName: string): string | null => {
   const normalizedName = productName.toLowerCase();
 
   if (normalizedName.includes("creatina") || normalizedName.includes("creatine")) {
-    return creatinaImage;
+    return "/assets/product-images/creatina.jpg";
   }
   if (
     normalizedName.includes("pre treino") ||
     normalizedName.includes("pre-treino") ||
     normalizedName.includes("pretreino")
   ) {
-    return preTreinoImage;
+    return "/assets/product-images/pre-treino.jpg";
   }
   if (normalizedName.includes("termogênico") || normalizedName.includes("termogenico")) {
-    return termogenicoImage;
+    return "/assets/product-images/termogenico.jpg";
   }
   if (normalizedName.includes("whey 900g") || normalizedName.includes("whey 900")) {
-    return whey900gImage;
+    return "/assets/product-images/whey-900g.jpg";
   }
   if (normalizedName.includes("whey 320g") || normalizedName.includes("whey 320")) {
-    return whey320gImage;
+    return "/assets/product-images/whey-320g.jpg";
   }
 
   return null;
