@@ -28,10 +28,14 @@ export const NFESearch: React.FC<NFESearchProps> = ({ barcode, setBarcode, loadi
         onChange={(e) => setBarcode(e.target.value)}
         placeholder="Escaneie ou digite a chave de acesso"
         autoFocus
-        className="flex-1 text-white bg-stone-800 border-stone-700 focus:border-orange-500 focus:ring-orange-500"
+        className="flex-1 text-white bg-stone-800/50 border-stone-700 focus:border-orange-500 focus:ring-orange-500 placeholder:text-stone-500"
         disabled={loading}
       />
-      <Button type="submit" className="bg-orange-600 hover:bg-orange-700 text-white" disabled={loading || !barcode}>
+      <Button
+        type="submit"
+        className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white shadow-[0_0_10px_rgba(234,88,12,0.3)]"
+        disabled={loading || !barcode}
+      >
         {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
         {loading ? "Buscando" : "Buscar"}
       </Button>
