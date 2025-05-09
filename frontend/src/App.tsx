@@ -79,9 +79,9 @@ const App: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.2 }}
                 >
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
                     {/* Left Column - KPIs, Customer Info */}
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       <NFEKPIs
                         totalItems={nfeDetails.data.itens.length}
                         shippingCost={nfeDetails.data.valorFrete}
@@ -92,7 +92,7 @@ const App: React.FC = () => {
                     </div>
 
                     {/* Right Column - Products List and Shipping Box */}
-                    <div className="lg:col-span-2 space-y-3">
+                    <div className="lg:col-span-2 grid grid-rows-[auto_1fr] gap-4">
                       <ProductList products={nfeDetails.data.itens} orderNumber={nfeDetails.data.numeroPedidoLoja} />
                       <ShippingBoxDisplay />
                     </div>
