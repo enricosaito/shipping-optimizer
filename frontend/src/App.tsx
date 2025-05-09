@@ -9,6 +9,7 @@ import { NFESearch } from "./components/NFESearch";
 import { NFEKPIs } from "./components/NFEKPIs";
 import { CustomerInfo } from "./components/CustomerInfo";
 import { ProductList } from "./components/ProductList";
+import ShippingBoxDisplay from "./components/ShippingBoxDisplay";
 
 const App: React.FC = () => {
   const [barcode, setBarcode] = useState("");
@@ -49,7 +50,7 @@ const App: React.FC = () => {
           <Card className="border-orange-600 bg-stone-900/90 backdrop-blur-sm shadow-[0_0_15px_rgba(234,88,12,0.3)]">
             <CardHeader className="pb-4">
               <div className="flex justify-center mb-2">
-                <img src="/assets/nutrition-white-nobg.png" alt="Nutrition Icon" className="h-12 w-12 object-contain" />
+                <img src="/assets/nutrition-white-nobg.png" alt="Nutrition Icon" className="h-16 w-16 object-contain" />
               </div>
               <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-orange-600 to-amber-600 text-transparent bg-clip-text">
                 Silva Nutrition - Consulta de NFE
@@ -81,7 +82,7 @@ const App: React.FC = () => {
                   className="mt-6"
                 >
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Left Column - KPIs and Customer Info */}
+                    {/* Left Column - KPIs, Customer Info, Shipping Box */}
                     <div className="space-y-6">
                       <NFEKPIs
                         totalItems={nfeDetails.data.itens.length}
@@ -90,6 +91,7 @@ const App: React.FC = () => {
                         installments={nfeDetails.data.parcelas.length}
                       />
                       <CustomerInfo customer={nfeDetails.data.contato} />
+                      <ShippingBoxDisplay />
                     </div>
 
                     {/* Right Column - Products List */}
