@@ -58,8 +58,8 @@ export const ProductList: React.FC<ProductListProps> = ({ products, orderNumber 
           </Badge>
         </div>
       </CardHeader>
-      <CardContent className="pt-2">
-        <div className="space-y-1.5">
+      <CardContent className="pt-2 pb-4">
+        <div className="space-y-2">
           {products.map((item, index) => {
             const productImage = getProductImage(item.descricao);
             return (
