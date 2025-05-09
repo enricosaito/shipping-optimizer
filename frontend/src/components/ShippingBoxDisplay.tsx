@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 const BOX_P = {
-  name: "Box P",
+  name: "Caixa P",
   width: 150,
   length: 140,
   height: 170,
@@ -15,7 +15,7 @@ const ShippingBoxDisplay: React.FC = () => (
     </CardHeader>
     <CardContent>
       <div className="flex flex-col items-center gap-2 py-2">
-        <div className="text-2xl font-bold text-orange-400">{BOX_P.name}</div>
+        <div className="text-2xl font-bold text-orange-500">{BOX_P.name}</div>
         <div className="text-base text-stone-300">
           <span className="font-semibold">Dimensões:</span>
           <br />
