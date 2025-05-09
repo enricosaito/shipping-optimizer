@@ -58,46 +58,45 @@ export const ProductList: React.FC<ProductListProps> = ({ products, orderNumber 
           </Badge>
         </div>
       </CardHeader>
-      <CardContent className="pt-2 pb-4">
+      <CardContent className="pt-2 pb-4 min-h-[180px]">
         <div className="space-y-2">
           {products.map((item, index) => {
             const productImage = getProductImage(item.descricao);
             return (
-              <Card key={index} className="bg-stone-900/50 border-stone-700" variant="compact">
-                <CardContent variant="compact" className="p-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-10 h-10 bg-stone-800 rounded flex items-center justify-center shrink-0 overflow-hidden">
-                      {productImage ? (
-                        <img src={productImage} alt={item.descricao} className="w-full h-full object-cover" />
-                      ) : (
-                        <Package className="h-5 w-5 text-orange-500" />
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="min-w-0">
-                          <h4 className="font-medium text-white truncate text-sm">{item.descricao}</h4>
-                          <div className="flex items-center gap-2 text-xs text-stone-400">
-                            <span>Cód: {item.codigo}</span>
-                            <span>•</span>
-                            <span>Qtd: {item.quantidade}</span>
-                            <span>•</span>
-                            <span>Peso: {item.pesoLiquido}kg</span>
-                            <span>•</span>
-                            <span>ICMS: {item.impostos.icms.aliquota}%</span>
-                          </div>
-                        </div>
-                        <Badge
-                          variant="outline"
-                          className="bg-amber-900/30 text-orange-300 border-orange-600 shrink-0 text-sm"
-                        >
-                          R$ {item.valorTotal.toFixed(2)}
-                        </Badge>
+              <div
+                key={index}
+                className="flex items-center gap-3 bg-stone-900/50 border border-stone-700 rounded px-2 py-2"
+              >
+                <div className="w-10 h-10 bg-stone-800 rounded flex items-center justify-center shrink-0 overflow-hidden">
+                  {productImage ? (
+                    <img src={productImage} alt={item.descricao} className="w-full h-full object-cover" />
+                  ) : (
+                    <Package className="h-5 w-5 text-orange-500" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <h4 className="font-medium text-white truncate text-sm">{item.descricao}</h4>
+                      <div className="flex items-center gap-2 text-xs text-stone-400">
+                        <span>Cód: {item.codigo}</span>
+                        <span>•</span>
+                        <span>Qtd: {item.quantidade}</span>
+                        <span>•</span>
+                        <span>Peso: {item.pesoLiquido}kg</span>
+                        <span>•</span>
+                        <span>ICMS: {item.impostos.icms.aliquota}%</span>
                       </div>
                     </div>
+                    <Badge
+                      variant="outline"
+                      className="bg-amber-900/30 text-orange-300 border-orange-600 shrink-0 text-sm"
+                    >
+                      R$ {item.valorTotal.toFixed(2)}
+                    </Badge>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             );
           })}
         </div>
