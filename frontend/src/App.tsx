@@ -50,7 +50,7 @@ const App: React.FC = () => {
           <Card className="border-orange-600 bg-stone-900/90 backdrop-blur-sm shadow-[0_0_15px_rgba(234,88,12,0.3)]">
             <CardHeader className="pb-4">
               <div className="flex justify-center mb-2">
-                <img src="/assets/nutrition-white-nobg.png" alt="Nutrition Icon" className="h-16 w-16 object-contain" />
+                <img src="/assets/nutrition-white-nobg.png" alt="Nutrition Icon" className="h-24 w-24 object-contain" />
               </div>
               <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-orange-600 to-amber-600 text-transparent bg-clip-text">
                 Silva Nutrition - Consulta de NFE
