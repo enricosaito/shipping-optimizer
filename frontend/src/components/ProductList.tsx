@@ -50,7 +50,7 @@ const getProductImage = (productName: string): string | null => {
 export const ProductList: React.FC<ProductListProps> = ({ products, orderNumber }) => {
   return (
     <Card className="border-stone-700 bg-stone-800/50 h-full">
-      <CardHeader className="pb-2 pt-4">
+      <CardHeader className="pb-2">
         <div className="flex justify-between items-center">
           <CardTitle className="text-lg text-orange-600">Produtos</CardTitle>
           <Badge variant="outline" className="bg-amber-900/30 text-orange-300 border-orange-600">
