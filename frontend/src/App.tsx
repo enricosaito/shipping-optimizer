@@ -48,12 +48,12 @@ const App: React.FC = () => {
           className="w-full max-w-7xl mx-auto"
         >
           <Card className="border-orange-600 bg-stone-900/90 backdrop-blur-sm shadow-[0_0_15px_rgba(234,88,12,0.3)]">
-            <CardHeader className="pb-4">
-              <div className="flex justify-center mb-2">
-                <img src="/assets/nutrition-white-nobg.png" alt="Nutrition Icon" className="h-24 w-24 object-contain" />
+            <CardHeader className="pb-2">
+              <div className="flex justify-center">
+                <img src="/assets/nutrition-white-nobg.png" alt="Nutrition Icon" className="h-22 w-60 object-contain" />
               </div>
               <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-orange-600 to-amber-600 text-transparent bg-clip-text">
-                Silva Nutrition - Consulta de NFE
+                Consulta de Envios
               </CardTitle>
               <p className="text-gray-400 text-center text-sm mt-1">Nota Fiscal Eletrônica</p>
             </CardHeader>
@@ -103,7 +103,7 @@ const App: React.FC = () => {
               )}
             </CardContent>
             <CardFooter className="flex justify-center pt-0 pb-4">
-              <p className="text-stone-500 text-xs">Sistema de consulta NFE • {new Date().getFullYear()}</p>
+              <p className="text-stone-500 text-xs">Grupo Silva ® {new Date().getFullYear()}</p>
             </CardFooter>
           </Card>
         </motion.div>
