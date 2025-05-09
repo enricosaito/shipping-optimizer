@@ -9,6 +9,7 @@ import { NFESearch } from "./components/NFESearch";
 import { NFEKPIs } from "./components/NFEKPIs";
 import { CustomerInfo } from "./components/CustomerInfo";
 import { ProductList } from "./components/ProductList";
+import ShippingBoxDisplay from "./components/ShippingBoxDisplay";
 
 const App: React.FC = () => {
   const [barcode, setBarcode] = useState("");
@@ -39,24 +40,23 @@ const App: React.FC = () => {
 
   return (
     <ThemeProvider defaultTheme="dark" forcedTheme="dark">
-      <div className="min-h-screen bg-gradient-to-br from-stone-900 via-neutral-900 to-stone-900 flex flex-col p-4">
+      <div className="min-h-screen max-h-screen overflow-auto bg-gradient-to-br from-stone-900 via-neutral-900 to-stone-900 flex flex-col p-3">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="w-full max-w-7xl mx-auto"
+          className="w-full max-w-6xl mx-auto"
         >
           <Card className="border-orange-600 bg-stone-900/90 backdrop-blur-sm shadow-[0_0_15px_rgba(234,88,12,0.3)]">
-            <CardHeader className="pb-4">
-              <div className="flex justify-center mb-2">
-                <img src="/assets/nutrition-white-nobg.png" alt="Nutrition Icon" className="h-12 w-12 object-contain" />
+            <CardHeader className="pb-1">
+              <div className="flex justify-center">
+                <img src="/assets/nutrition-white-nobg.png" alt="Nutrition Icon" className="h-16 w-44 object-contain" />
               </div>
-              <CardTitle className="text-2xl font-bold text-center bg-gradient-to-r from-orange-600 to-amber-600 text-transparent bg-clip-text">
-                Silva Nutrition - Consulta de NFE
+              <CardTitle className="text-xl font-bold text-center bg-gradient-to-r from-orange-600 to-amber-600 text-transparent bg-clip-text">
+                Consulta de Envios
               </CardTitle>
-              <p className="text-gray-400 text-center text-sm mt-1">Nota Fiscal Eletrônica</p>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-3">
               <NFESearch barcode={barcode} setBarcode={setBarcode} loading={loading} onSubmit={handleBarcodeSubmit} />
 
               {error && (
@@ -65,7 +65,7 @@ const App: React.FC = () => {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <Alert variant="destructive" className="mb-4 bg-rose-900/40 border-rose-800">
+                  <Alert variant="destructive" className="mb-3 bg-rose-900/40 border-rose-800">
                     <AlertCircle className="h-4 w-4" />
                     <AlertTitle className="font-semibold">Erro</AlertTitle>
                     <AlertDescription className="text-sm">{error}</AlertDescription>
@@ -78,11 +78,10 @@ const App: React.FC = () => {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: 0.2 }}
-                  className="mt-6"
                 >
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Left Column - KPIs and Customer Info */}
-                    <div className="space-y-6">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                    {/* Left Column - KPIs, Customer Info */}
+                    <div className="space-y-4">
                       <NFEKPIs
                         totalItems={nfeDetails.data.itens.length}
                         shippingCost={nfeDetails.data.valorFrete}
@@ -92,16 +91,17 @@ const App: React.FC = () => {
                       <CustomerInfo customer={nfeDetails.data.contato} />
                     </div>
 
-                    {/* Right Column - Products List */}
-                    <div className="lg:col-span-2">
+                    {/* Right Column - Products List and Shipping Box */}
+                    <div className="lg:col-span-2 grid grid-rows-[auto_1fr] gap-4">
                       <ProductList products={nfeDetails.data.itens} orderNumber={nfeDetails.data.numeroPedidoLoja} />
+                      <ShippingBoxDisplay />
                     </div>
                   </div>
                 </motion.div>
               )}
             </CardContent>
-            <CardFooter className="flex justify-center pt-0 pb-4">
-              <p className="text-stone-500 text-xs">Sistema de consulta NFE • {new Date().getFullYear()}</p>
+            <CardFooter className="flex justify-center pt-0 pb-2">
+              <p className="text-stone-500 text-xs">Grupo Silva ® {new Date().getFullYear()}</p>
             </CardFooter>
           </Card>
         </motion.div>

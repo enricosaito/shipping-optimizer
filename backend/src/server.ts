@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import { getNfeById, getNfeByAccessKey, getProductImage } from "./services/blingService";
 import axios from "axios";
 import { Request, Response } from "express";
+import { packOrder } from "./services/packingService";
 
 dotenv.config();
 
@@ -78,6 +79,22 @@ app.get("/api/produtos/:codigo", async (req: Request, res: Response): Promise<vo
   } catch (error) {
     console.error("Error fetching product image:", error);
     res.status(500).json({ error: "Failed to fetch product image" });
+  }
+});
+
+// Packing API endpoint
+app.post("/api/pack-order", (req: Request, res: Response) => {
+  try {
+    const order = req.body.order;
+    if (!Array.isArray(order)) {
+      res.status(400).json({ error: "Order must be an array of { name, quantity }" });
+      return;
+    }
+    const result = packOrder(order);
+    res.json(result);
+  } catch (error) {
+    console.error("Error in /api/pack-order:", error);
+    res.status(500).json({ error: "Failed to pack order" });
   }
 });
 
