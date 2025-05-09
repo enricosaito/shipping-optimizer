@@ -49,7 +49,7 @@ const getProductImage = (productName: string): string | null => {
 
 export const ProductList: React.FC<ProductListProps> = ({ products, orderNumber }) => {
   return (
-    <Card className="border-stone-700 bg-stone-800/50 h-full">
+    <Card variant="compact" className="border-stone-700 bg-stone-800/50 gap-2">
       <CardHeader className="pb-2">
         <div className="flex justify-between items-center">
           <CardTitle className="text-lg text-orange-600">Produtos</CardTitle>
