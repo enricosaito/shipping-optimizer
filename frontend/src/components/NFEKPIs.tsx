@@ -18,8 +18,8 @@ export const NFEKPIs: React.FC<NFEKPIsProps> = ({ totalItems, shippingCost, tota
       <CardContent>
         <div className="grid grid-cols-2 gap-2">
           <Card className="bg-stone-900/50 border-stone-700 hover:bg-stone-900/70 transition-colors">
-            <CardContent className="px-2 py-1">
-              <div className="flex items-center gap-2">
+            <CardContent className="px-2">
+              <div className="flex items-center gap-1">
                 <div className="w-7 h-7 bg-orange-900/30 rounded-full flex items-center justify-center">
                   <Package className="h-4 w-4 text-orange-500" />
                 </div>
@@ -31,8 +31,8 @@ export const NFEKPIs: React.FC<NFEKPIsProps> = ({ totalItems, shippingCost, tota
             </CardContent>
           </Card>
           <Card className="bg-stone-900/50 border-stone-700 hover:bg-stone-900/70 transition-colors">
-            <CardContent className="px-2 py-1">
-              <div className="flex items-center gap-2">
+            <CardContent className="px-2">
+              <div className="flex items-center gap-1">
                 <div className="w-7 h-7 bg-orange-900/30 rounded-full flex items-center justify-center">
                   <Truck className="h-4 w-4 text-orange-500" />
                 </div>
@@ -44,8 +44,8 @@ export const NFEKPIs: React.FC<NFEKPIsProps> = ({ totalItems, shippingCost, tota
             </CardContent>
           </Card>
           <Card className="bg-stone-900/50 border-stone-700 hover:bg-stone-900/70 transition-colors">
-            <CardContent className="px-2 py-1">
-              <div className="flex items-center gap-2">
+            <CardContent className="px-2">
+              <div className="flex items-center gap-1">
                 <div className="w-7 h-7 bg-orange-900/30 rounded-full flex items-center justify-center">
                   <CreditCard className="h-4 w-4 text-orange-500" />
                 </div>
@@ -57,8 +57,8 @@ export const NFEKPIs: React.FC<NFEKPIsProps> = ({ totalItems, shippingCost, tota
             </CardContent>
           </Card>
           <Card className="bg-stone-900/50 border-stone-700 hover:bg-stone-900/70 transition-colors">
-            <CardContent className="px-2 py-1">
-              <div className="flex items-center gap-2">
+            <CardContent className="px-2">
+              <div className="flex items-center gap-1">
                 <div className="w-7 h-7 bg-orange-900/30 rounded-full flex items-center justify-center">
                   <Calendar className="h-4 w-4 text-orange-500" />
                 </div>
