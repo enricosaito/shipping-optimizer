@@ -1,4 +1,5 @@
 import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 const BOX_P = {
   name: "Box P",
@@ -7,29 +8,22 @@ const BOX_P = {
   height: 170,
 };
 
-export const ShippingBoxDisplay: React.FC = () => (
-  <div
-    style={{
-      border: "2px solid #1976d2",
-      borderRadius: 8,
-      padding: 24,
-      maxWidth: 320,
-      margin: "32px auto",
-      background: "#f5faff",
-      boxShadow: "0 2px 8px rgba(25, 118, 210, 0.08)",
-      textAlign: "center",
-    }}
-  >
-    <h2 style={{ color: "#1976d2" }}>Recommended Shipping Box</h2>
-    <div style={{ fontSize: 22, fontWeight: 600, margin: "16px 0" }}>{BOX_P.name}</div>
-    <div style={{ fontSize: 18 }}>
-      <span>
-        <strong>Dimensions:</strong>
-        <br />
-        {BOX_P.width}mm (W) × {BOX_P.length}mm (L) × {BOX_P.height}mm (H)
-      </span>
-    </div>
-  </div>
+const ShippingBoxDisplay: React.FC = () => (
+  <Card className="border-stone-700 bg-stone-800/50">
+    <CardHeader className="pb-2">
+      <CardTitle className="text-lg text-orange-600">Caixa de Envio Recomendada</CardTitle>
+    </CardHeader>
+    <CardContent>
+      <div className="flex flex-col items-center gap-2 py-2">
+        <div className="text-2xl font-bold text-orange-400">{BOX_P.name}</div>
+        <div className="text-base text-stone-300">
+          <span className="font-semibold">Dimensões:</span>
+          <br />
+          {BOX_P.width}mm (L) × {BOX_P.length}mm (C) × {BOX_P.height}mm (A)
+        </div>
+      </div>
+    </CardContent>
+  </Card>
 );
 
 export default ShippingBoxDisplay;
