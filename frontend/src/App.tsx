@@ -91,12 +91,12 @@ const App: React.FC = () => {
                         installments={nfeDetails.data.parcelas.length}
                       />
                       <CustomerInfo customer={nfeDetails.data.contato} />
-                      <ShippingBoxDisplay />
                     </div>
 
                     {/* Right Column - Products List */}
-                    <div className="lg:col-span-2">
+                    <div className="lg:col-span-2 flex flex-col gap-6">
                       <ProductList products={nfeDetails.data.itens} orderNumber={nfeDetails.data.numeroPedidoLoja} />
+                      <ShippingBoxDisplay />
                     </div>
                   </div>
                 </motion.div>
